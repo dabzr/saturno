@@ -1,13 +1,14 @@
 use crate::Formula;
 //use std::vec::Vec;
 //use std::collections::HashSet;
-
-pub fn length(formula: Formula) -> i32 {
-    /*Determines the length of a formula in propositional logic.*/
-    match formula {
-        Formula::Atom(_) => 1,
-        Formula::Not(inner) => length(*inner) + 1,
-        Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => length(bop.lhs) + length(bop.rhs) + 1
+impl Formula {
+    pub fn length(&self) -> i32 {
+        /*Determines the length of a formula in propositional logic.*/
+        match self {
+            Formula::Atom(_) => 1,
+            Formula::Not(inner) => inner.length() + 1,
+            Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => bop.lhs.length() + bop.rhs.length() + 1
+        }
     }
 }
 /*

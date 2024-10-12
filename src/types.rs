@@ -13,6 +13,23 @@ pub enum Formula {
     Implies(Box<BinaryOperator>)
 }
 
+impl Formula {
+    pub fn to_str(&self) -> String {
+        match self {
+            Formula::Atom(s) => s.clone(),
+            Formula::Not(subformula) => format!("(¬{})", subformula.to_str()),
+            Formula::Implies(bop) => Self::to_str_binary_op(*bop.clone(), " → "),
+            Formula::Or(bop) => Self::to_str_binary_op(*bop.clone(), " ∨ "),
+            Formula::And(bop) => Self::to_str_binary_op(*bop.clone(), " ∧ "),
+        }
+    }
+
+    fn to_str_binary_op(bop: BinaryOperator, op: &str) -> String {
+        format!("({}{}{})", bop.lhs.to_str(), op, bop.rhs.to_str())
+    }
+}
+
+
 
 pub fn atom(s: &str) -> Formula {
     Formula::Atom(s.to_string())
@@ -32,20 +49,6 @@ pub fn implies(lhs: Formula, rhs: Formula) -> Formula {
 
 fn binop(lhs: Formula, rhs:Formula) -> Box<BinaryOperator> {
     Box::new(BinaryOperator {lhs, rhs})
-}
-
-pub fn to_str(formula: Formula) -> String {
-    match formula {
-        Formula::Atom(s) => s,
-        Formula::Not(subformula) => format!("(¬{})", to_str(*subformula)),
-        Formula::Implies(bop) => to_str_binary_op(*bop, " → "),
-        Formula::Or(bop) => to_str_binary_op(*bop, " ∨ "),
-        Formula::And(bop) => to_str_binary_op(*bop, " ∧ "),
-    }
-}
-
-fn to_str_binary_op(bop: BinaryOperator, op: &str) -> String {
-    format!("({}{}{})", to_str(bop.lhs), op, to_str(bop.rhs))
 }
 
 
