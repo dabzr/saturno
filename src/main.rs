@@ -35,7 +35,7 @@ fn main() {
     println!("subformulas of formula7: {:?}", formula7.subformulas());
 
     for subformula in formula7.subformulas() {
-        print!("{:?} ", subformula);
+        print!("{}, ", subformula.to_str());
     }
 
     println!("");
@@ -43,7 +43,7 @@ fn main() {
     println!("length of formula8: {}", formula8.length());
     print!("subformulas of formula8: ");
     for subformula in formula8.subformulas() {
-        print!("{:?} ", subformula);
+        print!("{}, ", subformula.to_str());
     }
     println!("");
     //  we have shown in class that for all formula A, len(subformulas(A)) <= length(A):

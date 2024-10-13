@@ -10,7 +10,7 @@ impl Formula {
             Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => bop.lhs.length() + bop.rhs.length() + 1
         }
     }
-    pub fn subformulas(&self) -> HashSet<String> {
+    pub fn subformulas(&self) -> HashSet<Formula> {
         /*Returns the set of all subformulas of a formula.
 
         For example, observe the piece of code below.
@@ -23,14 +23,14 @@ impl Formula {
         (Note that there is no repetition of p)
         */
         match self {
-            Formula::Atom(s) => HashSet::from([s.clone()]),
+            Formula::Atom(_) => HashSet::from([self.clone()]),
             Formula::Not(inner) => {
-                let mut set = HashSet::from([self.to_str()]);
+                let mut set = HashSet::from([self.clone()]);
                 set.extend(inner.subformulas());
                 return set
-            } ,
+            },
             Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
-                let mut set = HashSet::from([self.to_str()]);
+                let mut set = HashSet::from([self.clone()]);
                 set.extend(bop.lhs.subformulas());
                 set.extend(bop.rhs.subformulas());
                 return set
