@@ -25,17 +25,15 @@ impl Formula {
         match self {
             Formula::Atom(s) => HashSet::from([s.clone()]),
             Formula::Not(inner) => {
-                let mut set = HashSet::new();
-                set.insert(self.to_str());
+                let mut set = HashSet::from([self.to_str()]);
                 set.extend(inner.subformulas());
-                set
+                return set
             } ,
             Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
-                let mut set = HashSet::new();
-                set.insert(self.to_str());
+                let mut set = HashSet::from([self.to_str()]);
                 set.extend(bop.lhs.subformulas());
                 set.extend(bop.rhs.subformulas());
-                set
+                return set
             }
         }
 }
