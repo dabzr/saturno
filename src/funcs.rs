@@ -1,8 +1,8 @@
 use crate::Formula;
 //use std::vec::Vec;
-//use std::collections::HashSet;
+use std::collections::HashSet;
 impl Formula {
-    pub fn length(&self) -> i32 {
+    pub fn length(&self) -> usize {
         /*Determines the length of a formula in propositional logic.*/
         match self {
             Formula::Atom(_) => 1,
@@ -10,24 +10,40 @@ impl Formula {
             Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => bop.lhs.length() + bop.rhs.length() + 1
         }
     }
-}
-/*
-pub fn subformulas(formula: Formula) -> Vec<i32> {
-    /*Returns the set of all subformulas of a formula.
+    pub fn subformulas(&self) -> HashSet<String> {
+        /*Returns the set of all subformulas of a formula.
 
-    For example, observe the piece of code below.
+        For example, observe the piece of code below.
 
-    my_formula = Implies(Atom('p'), Or(Atom('p'), Atom('s')))
-    for subformula in subformulas(my_formula):
-        print(subformula)
+        my_formula = Implies(Atom('p'), Or(Atom('p'), Atom('s')))
+        for subformula in subformulas(my_formula):
+            print(subformula)
 
-    This piece of code prints p, s, (p v s), (p → (p v s))
-    (Note that there is no repetition of p)
-    */
-    
+        This piece of code prints p, s, (p v s), (p → (p v s))
+        (Note that there is no repetition of p)
+        */
+        match self {
+            Formula::Atom(s) => HashSet::from([s.clone()]),
+            Formula::Not(inner) => {
+                let mut set = HashSet::new();
+                set.insert(self.to_str());
+                set.extend(inner.subformulas());
+                set
+            } ,
+            Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
+                let mut set = HashSet::new();
+                set.insert(self.to_str());
+                set.extend(bop.lhs.subformulas());
+                set.extend(bop.rhs.subformulas());
+                set
+            }
+        }
 }
 //  we have shown in class that, for all formula A, len(subformulas(A)) <= length(A).
 
+
+}
+/*
 
 pub fn atoms(formula: Formula) -> HashSet<String> {
     /*Returns the set of all atoms occurring in a formula.
