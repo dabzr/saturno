@@ -30,25 +30,12 @@ impl Formula {
 }
 
 
+pub fn atom(s: &str) -> Formula { Formula::Atom(s.to_string()) }
+pub fn not(formula: Formula) -> Formula { Formula::Not(Box::new(formula)) }
+pub fn or(lhs: Formula, rhs: Formula) -> Formula { Formula::Or(binop(lhs, rhs)) }
+pub fn and(lhs: Formula, rhs: Formula) -> Formula { Formula::And(binop(lhs, rhs)) }
+pub fn implies(lhs: Formula, rhs: Formula) -> Formula { Formula::Implies(binop(lhs, rhs)) }
 
-pub fn atom(s: &str) -> Formula {
-    Formula::Atom(s.to_string())
-}
-pub fn not(formula: Formula) -> Formula {
-    Formula::Not(Box::new(formula))
-}
-pub fn or(lhs: Formula, rhs: Formula) -> Formula {
-    Formula::Or(binop(lhs, rhs))
-}
-pub fn and(lhs: Formula, rhs: Formula) -> Formula {
-    Formula::And(binop(lhs, rhs))
-}
-pub fn implies(lhs: Formula, rhs: Formula) -> Formula {
-    Formula::Implies(binop(lhs, rhs))
-}
-
-fn binop(lhs: Formula, rhs:Formula) -> Box<BinaryOperator> {
-    Box::new(BinaryOperator {lhs, rhs})
-}
+fn binop(lhs: Formula, rhs:Formula) -> Box<BinaryOperator> { Box::new(BinaryOperator {lhs, rhs}) }
 
 
