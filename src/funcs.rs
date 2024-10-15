@@ -3,7 +3,6 @@ use crate::Formula;
 use std::collections::HashSet;
 impl Formula {
     pub fn length(&self) -> usize {
-        /*Determines the length of a formula in propositional logic.*/
         match self {
             Formula::Atom(_) => 1,
             Formula::Not(inner) => inner.length() + 1,
@@ -11,54 +10,35 @@ impl Formula {
         }
     }
     pub fn subformulas(&self) -> HashSet<Formula> {
-        /*Returns the set of all subformulas of a formula.
-
-        For example, observe the piece of code below.
-
-        my_formula = Implies(Atom('p'), Or(Atom('p'), Atom('s')))
-        for subformula in subformulas(my_formula):
-            print(subformula)
-
-        This piece of code prints p, s, (p v s), (p → (p v s))
-        (Note that there is no repetition of p)
-        */
+        let mut set: HashSet<Formula> = HashSet::new();
+        set.insert(self.clone());
         match self {
-            Formula::Atom(_) => HashSet::from([self.clone()]),
+            Formula::Atom(_) => {},
             Formula::Not(inner) => {
-                let mut set = HashSet::from([self.clone()]);
                 set.extend(inner.subformulas());
-                return set
             },
             Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
-                let mut set = HashSet::from([self.clone()]);
                 set.extend(bop.lhs.subformulas());
                 set.extend(bop.rhs.subformulas());
-                return set
             }
         }
+        return set
     }
     pub fn atoms(&self) -> HashSet<Formula> {
-        /*Returns the set of all atoms occurring in a formula.
-
-        For example, observe the piece of code below.
-
-        my_formula = Implies(Atom('p'), Or(Atom('p'), Atom('s')))
-        for atom in atoms(my_formula):
-            print(atom)
-
-        This piece of code above prints: p, s
-        (Note that there is no repetition of p)
-        */
-        let mut result: HashSet<Formula> = HashSet::new();
+        let mut set: HashSet<Formula> = HashSet::new();
         match self {
-            Formula::Atom(_) => { result.insert(self.clone()); },
-            Formula::Not(inner) => { result.extend(inner.atoms()); },
+            Formula::Atom(_) => {
+                set.insert(self.clone());
+            },
+            Formula::Not(inner) => {
+                set.extend(inner.atoms());
+            },
             Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
-                result.extend(bop.lhs.atoms());
-                result.extend(bop.rhs.atoms());
+                set.extend(bop.lhs.atoms());
+                set.extend(bop.rhs.atoms());
             }
         }
-        result
+        return set
     }
 }
 //  we have shown in class that, for all formula A, len(subformulas(A)) <= length(A).
