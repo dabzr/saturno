@@ -42,12 +42,13 @@ fn main() {
 
     println!("length of formula8: {}", formula8.length());
     print!("subformulas of formula8: ");
-    for subformula in formula8.subformulas() {
-        print!("{}, ", subformula.to_str());
-    }
+    for subformula in formula8.subformulas() { print!("{}, ", subformula.to_str()); }
     println!("");
     //  we have shown in class that for all formula A, len(subformulas(A)) <= length(A):
     // for example, for formula8:
     println!("number of subformulas of formula8: {}", formula8.subformulas().len());
-    println!("formula8.subformulas().len() <= formula8.length(): {}", formula8.subformulas().len() <= formula8.length())
+    println!("formula8.subformulas().len() <= formula8.length(): {}", formula8.subformulas().len() <= formula8.length());
+    print!("Atoms of formula8: ");
+    for atom in formula8.atoms() { print!("{} ", atom.to_str()); }
+    println!("")
 }

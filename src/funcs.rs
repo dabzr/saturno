@@ -36,25 +36,33 @@ impl Formula {
                 return set
             }
         }
+    }
+    pub fn atoms(&self) -> HashSet<Formula> {
+        /*Returns the set of all atoms occurring in a formula.
+
+        For example, observe the piece of code below.
+
+        my_formula = Implies(Atom('p'), Or(Atom('p'), Atom('s')))
+        for atom in atoms(my_formula):
+            print(atom)
+
+        This piece of code above prints: p, s
+        (Note that there is no repetition of p)
+        */
+        let mut result: HashSet<Formula> = HashSet::new();
+        match self {
+            Formula::Atom(_) => { result.insert(self.clone()); },
+            Formula::Not(inner) => { result.extend(inner.atoms()); },
+            Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
+                result.extend(bop.lhs.atoms());
+                result.extend(bop.rhs.atoms());
+            }
+        }
+        result
+    }
 }
 //  we have shown in class that, for all formula A, len(subformulas(A)) <= length(A).
-
-
-}
 /*
-
-pub fn atoms(formula: Formula) -> HashSet<String> {
-    /*Returns the set of all atoms occurring in a formula.
-
-    For example, observe the piece of code below.
-
-    my_formula = Implies(Atom('p'), Or(Atom('p'), Atom('s')))
-    for atom in atoms(my_formula):
-        print(atom)
-
-    This piece of code above prints: p, s
-    (Note that there is no repetition of p)
-    */
 }
 
 pub fn number_of_atoms(formula: Formula) -> i32 {
