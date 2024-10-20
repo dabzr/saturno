@@ -7,8 +7,8 @@ pub enum Formula {
     Implies(Box<Formula>, Box<Formula>),
 }
 
-use Formula::*;
 use std::fmt;
+use Formula::*;
 
 impl Formula {
     pub fn to_string(&self) -> String {

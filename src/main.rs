@@ -67,8 +67,14 @@ fn main() {
         print!("{} ", atom);
     }
     println!("");
-    println!("Number of atoms of formula8 is: {}", formula8.number_of_atoms());
-    println!("Number of connectives of formula8 is: {}", formula8.number_of_connectives());
+    println!(
+        "Number of atoms of formula8 is: {}",
+        formula8.number_of_atoms()
+    );
+    println!(
+        "Number of connectives of formula8 is: {}",
+        formula8.number_of_connectives()
+    );
     println!("formula8 is literal: {}", formula8.is_literal());
     println!("formula1 is literal: {}", formula1.is_literal());
     println!("formula9 is literal: {}", formula9.is_literal());
@@ -86,28 +92,33 @@ fn main() {
 
     let clause = or(atom("p"), or(atom("q"), not(atom("s")))).is_clause();
     println!("is_clause(p ∨ q ∨ ¬s): {}", clause);
-    
+
     let clause = or(atom("p"), and(atom("q"), atom("s"))).is_clause();
     println!("is_clause(p ∨ q ∧ s): {}", clause);
-    
+
     let clause = not(atom("p")).is_clause();
     println!("is_clause(¬p): {}", clause);
 
     println!("is formula8 is negation normal form? {}", formula8.is_nnf());
     let nnf = or(atom("p"), or(atom("q"), not(atom("s")))).is_nnf();
     println!("is_nnf(p ∨ q ∨ ¬s): {}", nnf);
-    
-    let cnf = and(not(atom("p")), and(or(atom("p"), not(atom("q"))), or(atom("s"), atom("p"))));
+
+    let cnf = and(
+        not(atom("p")),
+        and(or(atom("p"), not(atom("q"))), or(atom("s"), atom("p"))),
+    );
     println!("is_cnf({}): {}", cnf, cnf.is_cnf());
-    
-    let cnf = or(not(atom("p")), and(or(atom("p"), not(atom("q"))), and(atom("s"), atom("p"))));
+
+    let cnf = or(
+        not(atom("p")),
+        and(or(atom("p"), not(atom("q"))), and(atom("s"), atom("p"))),
+    );
     println!("is_cnf({}): {}", cnf, cnf.is_cnf());
-    
+
     let dnnf = or(
         and(or(atom("a"), not(atom("b"))), or(atom("c"), atom("d"))),
-        and(or(atom("a"), atom("b")), or(not(atom("c")), not(atom("d"))))
+        and(or(atom("a"), atom("b")), or(not(atom("c")), not(atom("d")))),
     );
-    
-    println!("is_dnnf({}): {}", dnnf, dnnf.is_dnnf());
 
+    println!("is_dnnf({}): {}", dnnf, dnnf.is_dnnf());
 }
