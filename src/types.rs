@@ -11,10 +11,10 @@ use Formula::*;
 use std::fmt;
 
 impl Formula {
-    pub fn to_str(&self) -> String {
+    pub fn to_string(&self) -> String {
         match self {
             Atom(s) => s.clone(),
-            Not(subformula) => format!("(¬{})", subformula),
+            Not(inner) => format!("(¬{})", inner),
             Implies(lhs, rhs) => format!("({} → {})", lhs, rhs),
             Or(lhs, rhs) => format!("({} ∨ {})", lhs, rhs),
             And(lhs, rhs) => format!("({} ∧ {})", lhs, rhs),
@@ -24,7 +24,7 @@ impl Formula {
 
 impl fmt::Display for Formula {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.to_str())
+        write!(f, "{}", self.to_string())
     }
 }
 
