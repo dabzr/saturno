@@ -1,104 +1,139 @@
 use crate::Formula;
-//use std::vec::Vec;
 use std::collections::HashSet;
+use Formula::*;
+use crate::not;
+use crate::or;
+use crate::and;
+use crate::implies;
 impl Formula {
     pub fn length(&self) -> usize {
         match self {
-            Formula::Atom(_) => 1,
-            Formula::Not(inner) => inner.length() + 1,
-            Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => bop.lhs.length() + bop.rhs.length() + 1
+            Atom(_) => 1,
+            Not(inner) => inner.length() + 1,
+            Or(lhs,rhs) | And(lhs, rhs) | Implies(lhs, rhs) => lhs.length() + rhs.length() + 1,
         }
     }
     pub fn subformulas(&self) -> HashSet<Formula> {
         let mut set: HashSet<Formula> = HashSet::new();
         set.insert(self.clone());
         match self {
-            Formula::Atom(_) => {},
-            Formula::Not(inner) => {
+            Atom(_) => {}
+            Not(inner) => {
                 set.extend(inner.subformulas());
-            },
-            Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
-                set.extend(bop.lhs.subformulas());
-                set.extend(bop.rhs.subformulas());
+            }
+            Or(lhs,rhs) | And(lhs, rhs) | Implies(lhs, rhs) => {
+                set.extend(lhs.subformulas());
+                set.extend(rhs.subformulas());
             }
         }
-        return set
+        return set;
     }
     pub fn atoms(&self) -> HashSet<Formula> {
         let mut set: HashSet<Formula> = HashSet::new();
         match self {
-            Formula::Atom(_) => {
+            Atom(_) => {
                 set.insert(self.clone());
-            },
-            Formula::Not(inner) => {
+            }
+            Not(inner) => {
                 set.extend(inner.atoms());
-            },
-            Formula::Or(bop) | Formula::And(bop) | Formula::Implies(bop) => {
-                set.extend(bop.lhs.atoms());
-                set.extend(bop.rhs.atoms());
+            }
+            Or(lhs,rhs) | And(lhs, rhs) | Implies(lhs, rhs) => {
+                set.extend(lhs.atoms());
+                set.extend(rhs.atoms());
             }
         }
-        return set
+        return set;
     }
-}
-//  we have shown in class that, for all formula A, len(subformulas(A)) <= length(A).
-/*
+
+    pub fn number_of_atoms(&self) -> i32 {
+        match self {
+            Atom(_) => 1,
+            Not(inner) => inner.number_of_atoms(),
+            Or(lhs,rhs) | And(lhs, rhs) | Implies(lhs, rhs) => lhs.number_of_atoms() + rhs.number_of_atoms()
+        }
+    }
+    pub fn number_of_connectives(&self) -> i32 {
+        match self {
+            Atom(_) => 0,
+            Not(inner) => inner.number_of_connectives() + 1,
+            Or(lhs,rhs) | And(lhs, rhs) | Implies(lhs, rhs) => lhs.number_of_connectives() + rhs.number_of_connectives() + 1
+        }
+    }
+
+    pub fn is_literal(&self) -> bool {
+        match self {
+            Atom(_) => true,
+            Not(inner) => matches!(**inner, Atom(_)),
+            _ => false
+        }
+    }
+
+    pub fn replace(&self, old_subf: Formula, new_subf: Formula) -> Formula {
+        if *self == old_subf { return new_subf }
+        match self {
+            Atom(_) => self.clone(),
+            Not(inner) => not(inner.replace(old_subf, new_subf)),
+            Or(lhs,rhs) => or(lhs.replace(old_subf.clone(), new_subf.clone()), rhs.replace(old_subf, new_subf)),
+            And(lhs,rhs) => and(lhs.replace(old_subf.clone(), new_subf.clone()), rhs.replace(old_subf, new_subf)),
+            Implies(lhs,rhs) => implies(lhs.replace(old_subf.clone(), new_subf.clone()), rhs.replace(old_subf, new_subf)),
+        }
+    }
+
+    pub fn is_clause(&self) -> bool {
+        match self {
+            Or(lhs,rhs) => lhs.is_clause() && rhs.is_clause(),
+            _ => self.is_literal()
+        }
+    }
+    
+    pub fn is_nnf(&self) -> bool {
+        match self {
+            Atom(_) => true,
+            Not(inner) => inner.is_literal(),
+            Or(lhs, rhs) | And(lhs, rhs) => lhs.is_nnf() && rhs.is_nnf(),
+            Implies(_, _) => false
+        }
+    }
+
+    pub fn is_cnf(&self) -> bool {
+        match self {
+            And(lhs,rhs) => {
+                let cond_l = lhs.is_clause() || lhs.is_cnf();
+                let cond_r = rhs.is_clause() || rhs.is_cnf();
+                cond_l && cond_r
+            },
+            _ => false
+        }
+    }
+
+
+    pub fn is_term(&self) -> bool {
+        match self {
+            And(lhs,rhs) => lhs.is_clause() && rhs.is_clause(),
+            _ => self.is_literal()
+        }
+    }
+
+    pub fn is_dnf(&self) -> bool {
+        match self {
+            Or(lhs,rhs) => {
+                let cond_l = lhs.is_term() || lhs.is_dnf();
+                let cond_r = rhs.is_term() || rhs.is_dnf();
+                cond_l && cond_r
+            }
+            _ => false
+        }
+    }
+    pub fn is_dnnf(&self) -> bool {
+        if !self.is_nnf() {
+            return false;
+        }
+        match self {
+            And(lhs, rhs) => if lhs.atoms().intersection(&rhs.atoms()).count() == 0 { lhs.is_dnnf() && rhs.is_dnnf()} else {false}
+            Or(lhs, rhs) => lhs.is_dnnf() && rhs.is_dnnf(),
+            _ => true,
+        }
+    }
+
 }
 
-pub fn number_of_atoms(formula: Formula) -> i32 {
-    /*Returns the number of atoms occurring in a formula.
-    For instance,
-    number_of_atoms(Implies(Atom('q'), And(Atom('p'), Atom('q'))))
-
-    must return 3 (Observe that this function counts the repetitions of atoms)
-    */
-}
-
-pub fn number_of_connectives(formula: Formula) -> i32 {
-    /*Returns the number of connectives occurring in a formula.*/
-}
-
-pub fn is_literal(formula: Formula) -> bool {
-    /*Returns True if formula is a literal. It returns False, otherwise*/
-}
-
-pub fn substitution(formula: Formula, old_subformula: Formula, new_subformula: Formula) -> Formula {
-    /*Returns a new formula obtained by replacing all occurrences
-    of old_subformula in the input formula by new_subformula.*/
-}
-
-pub fn is_clause(formula: Formula) -> bool {
-    /*Returns True if formula is a clause. It returns False, otherwise*/
-    // ======== REMOVE THIS LINE AND INSERT YOUR CODE HERE ========
-}
-
-pub fn is_negation_normal_form(formula: Formula) -> bool {
-    /*Returns True if formula is in negation normal form.
-    Returns False, otherwise.*/
-    // ======== REMOVE THIS LINE AND INSERT YOUR CODE HERE ========
-}
-
-pub fn is_cnf(formula: Formula) -> bool {
-    /*Returns True if formula is in conjunctive normal form.
-    Returns False, otherwise.*/
-    // ======== REMOVE THIS LINE AND INSERT YOUR CODE HERE ========
-}
-
-pub fn is_term(formula: Formula) -> bool {
-    /*Returns True if formula is a term. It returns False, otherwise*/
-    // ======== REMOVE THIS LINE AND INSERT YOUR CODE HERE ========
-}
-
-pub fn is_dnf(formula: Formula) -> bool {
-    /*Returns True if formula is in disjunctive normal form.
-    Returns False, otherwise.*/
-    // ======== REMOVE THIS LINE AND INSERT YOUR CODE HERE ========
-}
-
-pub fn is_decomposable_negation_normal_form(formula: Formula) -> bool{
-    /*Returns True if formula is in decomposable negation normal form.
-    Returns False, otherwise.*/
-    // ======== REMOVE THIS LINE AND INSERT YOUR CODE HERE ========
-}
-
-*/
