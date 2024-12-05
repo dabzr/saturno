@@ -137,10 +137,10 @@ impl Formula {
         }
         match self {
             And(lhs, rhs) => {
-                if lhs.atoms().intersection(&rhs.atoms()).count() == 0 {
-                    return lhs.is_dnnf() && rhs.is_dnnf();
+                match lhs.atoms().intersection(&rhs.atoms()).count() {
+                    0 => lhs.is_dnnf() && rhs.is_dnnf(),
+                    _ => false
                 }
-                return false;
             }
             Or(lhs, rhs) => lhs.is_dnnf() && rhs.is_dnnf(),
             _ => true,

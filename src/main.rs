@@ -1,6 +1,7 @@
 mod types;
 use types::*;
 mod funcs;
+mod semantics;
 
 fn main() {
     let formula1 = atom("p"); // p
