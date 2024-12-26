@@ -1,14 +1,24 @@
-#[derive(Debug, Clone, Hash, Eq, PartialEq)]
-pub enum Formula {
-    Atom(String),
-    Not(Box<Formula>),
-    Or(Box<Formula>, Box<Formula>),
-    And(Box<Formula>, Box<Formula>),
-    Implies(Box<Formula>, Box<Formula>),
-}
-
+use std::collections::HashMap;
 use std::fmt;
 use Formula::*;
+use std::rc::Rc;
+
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
+
+pub enum Formula {
+    Atom(String),
+    Not(Rc<Formula>),
+    Or(Rc<Formula>, Rc<Formula>),
+    And(Rc<Formula>, Rc<Formula>),
+    Implies(Rc<Formula>, Rc<Formula>),
+}
+
+pub type Interpretation = HashMap<Formula, bool>;
+
+pub enum SAT {
+    Satisfiable(Interpretation),
+    Unsatisfiable()
+}
 
 impl Formula {
     pub fn to_string(&self) -> String {
@@ -32,14 +42,14 @@ pub fn atom(s: &str) -> Formula {
     Atom(s.to_string())
 }
 pub fn not(formula: Formula) -> Formula {
-    Not(Box::new(formula))
+    Not(Rc::new(formula))
 }
 pub fn or(lhs: Formula, rhs: Formula) -> Formula {
-    Or(Box::new(lhs), Box::new(rhs))
+    Or(Rc::new(lhs), Rc::new(rhs))
 }
 pub fn and(lhs: Formula, rhs: Formula) -> Formula {
-    And(Box::new(lhs), Box::new(rhs))
+    And(Rc::new(lhs), Rc::new(rhs))
 }
 pub fn implies(lhs: Formula, rhs: Formula) -> Formula {
-    Implies(Box::new(lhs), Box::new(rhs))
+    Implies(Rc::new(lhs), Rc::new(rhs))
 }
