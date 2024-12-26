@@ -4,7 +4,6 @@ use Formula::*;
 use std::rc::Rc;
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
-
 pub enum Formula {
     Atom(String),
     Not(Rc<Formula>),
