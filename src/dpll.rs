@@ -12,14 +12,10 @@ impl Formula {
                 Err(()) => self.to_cnf_naive().cnf_to_list_naive().unwrap(),
                 Ok(v) => v
             };
-        let item = lst
-                    .last()
-                    .unwrap()
-                    .iter()
-                    .next()
-                    .unwrap();
+        let item =  lst.last().unwrap().iter().next().unwrap();
         item.sat_rec(lst.clone(), HashSet::new()) || item.negate().sat_rec(lst, HashSet::new())
     }
+
     fn sat_rec(&self, mut clauses: Vec<HashSet<Rc<Formula>>>, mut visited_literals: HashSet<Rc<Formula>>) -> bool {
         if visited_literals.contains(&self.negate()) {
             return false;
@@ -33,12 +29,11 @@ impl Formula {
             clauses.pop();
             return self.sat_rec(clauses, visited_literals); 
         }
-        if last.contains(self.negate().as_ref()) {
-            let nset = HashSet::from([self.negate()]);
-            if *last == nset.clone() {
+        if last.contains(&self.negate()) {
+            if *last == HashSet::from([self.negate()]) {
                 return false;
             }
-            last.remove(self.negate().as_ref());
+            last.remove(&self.negate());
         }
         let next_literal = last.iter().next().cloned().unwrap();
         return next_literal.sat_rec(clauses, visited_literals);

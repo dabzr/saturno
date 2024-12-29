@@ -7,9 +7,7 @@ mod dpll;
 
 fn main() {
     let f = and(atom("p"), atom("q"));
-    println!("formula: {}", f.clone());
-    println!("formula-cnf: {}", f.sat_dpll());
+    println!("is {} satisfiable? {}", f.clone(), f.sat_dpll());
     let f2 = and(not(atom("p")), atom("p"));
-    println!("formula 2: {}", f2.clone());
-    println!("formula-cnf 2: {}", f2.sat_dpll());
+    println!("is {} satisfiable? {}", f2.clone(), f2.sat_dpll());
 }

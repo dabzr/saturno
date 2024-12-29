@@ -46,7 +46,7 @@ impl FormulaSetExt for HashSet<Rc<Formula>> {
                     s.insert(lhs.clone());
                     literals_in_clause(rhs.clone(), s)
                 }
-                Atom(_) => {
+                Atom(_) | Not(_) => {
                     s.insert(f);
                     s
                 }
@@ -56,6 +56,7 @@ impl FormulaSetExt for HashSet<Rc<Formula>> {
         self
             .iter()
             .map(|x| literals_in_clause(x.clone(), HashSet::new()))
+            .filter(|x| *x != HashSet::new())
             .collect()
     }
 }
