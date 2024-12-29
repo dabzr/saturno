@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::fmt;
 use Formula::*;
 use std::rc::Rc;
@@ -12,12 +11,12 @@ pub enum Formula {
     Implies(Rc<Formula>, Rc<Formula>),
 }
 
-pub type Interpretation = HashMap<Formula, bool>;
+// pub type Interpretation = HashMap<Formula, bool>;
 
-pub enum SAT {
-    Satisfiable(Interpretation),
-    Unsatisfiable()
-}
+// pub enum SAT {
+//     Satisfiable(Interpretation),
+//     Unsatisfiable()
+// }
 
 impl Formula {
     pub fn to_string(&self) -> String {
