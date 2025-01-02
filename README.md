@@ -1,2 +1,2 @@
-SATurno
+# SATurno
 Repositório com fim educativo que visa tentar recriar algoritmos de satisfatibilidade em Rust.
