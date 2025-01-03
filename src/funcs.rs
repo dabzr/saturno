@@ -35,11 +35,10 @@ impl Formula {
         }
     }
 
-   pub fn is_cnf(&self) -> bool {
+    pub fn is_cnf(&self) -> bool {
         match self {
             And(lhs, rhs) => (lhs.is_clause() || lhs.is_cnf()) && (rhs.is_clause() || rhs.is_cnf()),
             _ => false,
         }
     }
-
 }

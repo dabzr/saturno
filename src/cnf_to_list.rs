@@ -1,19 +1,15 @@
 use crate::Formula;
-use Formula::*;
 use std::collections::HashSet;
-use std::vec::Vec;
 use std::rc::Rc;
+use std::vec::Vec;
+use Formula::*;
 
 impl Formula {
     pub fn cnf_to_list_naive(&self) -> Result<Vec<HashSet<Rc<Formula>>>, ()> {
         if !self.is_cnf() {
-            return Err(())
+            return Err(());
         }
-        Ok(
-            self
-            .get_all_clauses()
-            .get_all_literals()
-        )
+        Ok(self.get_all_clauses().get_all_literals())
     }
     fn get_all_clauses(&self) -> HashSet<Rc<Formula>> {
         fn acc_clauses(f: Rc<Formula>, mut s: HashSet<Rc<Formula>>) -> HashSet<Rc<Formula>> {
@@ -21,12 +17,12 @@ impl Formula {
                 And(lhs, rhs) => {
                     s.insert(lhs.clone());
                     acc_clauses(rhs.clone(), s)
-                },
+                }
                 Atom(_) | Or(_, _) => {
                     s.insert(f);
                     s
-                },
-                _ => s
+                }
+                _ => s,
             }
         }
         let set = HashSet::new();
@@ -50,14 +46,12 @@ impl FormulaSetExt for HashSet<Rc<Formula>> {
                     s.insert(f);
                     s
                 }
-                _ => s
+                _ => s,
             }
         }
-        self
-            .iter()
+        self.iter()
             .map(|x| literals_in_clause(x.clone(), HashSet::new()))
             .filter(|x| *x != HashSet::new())
             .collect()
     }
 }
-

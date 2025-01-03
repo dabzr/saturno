@@ -1,9 +1,9 @@
 mod types;
 use types::*;
-mod funcs;
-mod to_cnf_naive;
 mod cnf_to_list;
 mod dpll;
+mod funcs;
+mod to_cnf_naive;
 
 fn main() {
     let f = and(atom("p"), atom("q"));

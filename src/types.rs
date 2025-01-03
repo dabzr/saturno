@@ -1,6 +1,6 @@
 use std::fmt;
-use Formula::*;
 use std::rc::Rc;
+use Formula::*;
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq)]
 pub enum Formula {
