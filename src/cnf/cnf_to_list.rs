@@ -1,11 +1,11 @@
-use crate::Formula;
+use crate::types::Formula;
 use std::collections::HashSet;
 use std::rc::Rc;
 use std::vec::Vec;
 use Formula::*;
 
 impl Formula {
-    pub fn cnf_to_list_naive(&self) -> Result<Vec<HashSet<Rc<Formula>>>, ()> {
+    pub fn cnf_to_list(&self) -> Result<Vec<HashSet<Rc<Formula>>>, ()> {
         if !self.is_cnf() {
             return Err(());
         }

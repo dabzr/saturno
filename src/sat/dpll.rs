@@ -1,5 +1,5 @@
-use crate::not;
-use crate::Formula;
+use crate::types::not;
+use crate::types::Formula;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::rc::Rc;
@@ -10,8 +10,8 @@ type Clauses = Vec<HashSet<Rc<Formula>>>;
 
 impl Formula {
     pub fn sat_dpll(&self) -> bool {
-        let lst = match self.cnf_to_list_naive() {
-            Err(()) => self.to_cnf_naive().cnf_to_list_naive().unwrap(),
+        let lst = match self.cnf_to_list() {
+            Err(()) => self.to_cnf_naive().cnf_to_list().unwrap(),
             Ok(v) => v,
         };
         lst.unit_propagate().pure_literal_elimination().dpll()

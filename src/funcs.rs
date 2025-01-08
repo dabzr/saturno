@@ -1,4 +1,4 @@
-use crate::Formula;
+use crate::types::Formula;
 use std::collections::HashSet;
 use Formula::*;
 
