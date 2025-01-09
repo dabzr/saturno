@@ -27,7 +27,7 @@ fn create_php_formula(n: usize) -> Formula {
 }
 
 fn main() {
-    let n = 3; 
+    let n = 4; 
     let formula = create_php_formula(n);
     let f_sat = formula.sat_dpll();
     println!("A fórmula é satisfatível? {}", f_sat);

@@ -14,7 +14,7 @@ impl Formula {
             Err(()) => self.to_cnf_naive().cnf_to_list().unwrap(),
             Ok(v) => v,
         };
-        lst.unit_propagate().pure_literal_elimination().dpll()
+        lst.dpll()
     }
 
     pub fn negate(&self) -> Rc<Formula> {
@@ -37,19 +37,20 @@ trait DPLLHeuristics {
 
 impl DPLLSolve for Clauses {
     fn dpll(&self) -> bool {
-        if self.is_empty() {
+        let clauses = self.unit_propagate().pure_literal_elimination();
+        if clauses.is_empty() {
             return true;
         }
-        if self.iter().any(|x| x.is_empty()) {
+        if clauses.iter().any(|x| x.is_empty()) {
             return false;
         }
-        let literal = self.choose_literal();
-        let clauses_left: Clauses = self
+        let literal = clauses.choose_literal();
+        let clauses_left: Clauses = clauses
             .iter()
             .filter(|clause| !clause.contains(&literal))
             .cloned()
             .collect();
-        let clauses_right: Clauses = self
+        let clauses_right: Clauses = clauses
             .iter()
             .filter(|clause| !clause.contains(&literal.negate()))
             .cloned()
