@@ -5,8 +5,8 @@ fn create_php_formula(n: usize) -> Formula {
     let mut delta = atom("neutral2");
     for i in 1..=n + 1 {
         let clause = (1..=n)
-            .map(|j| atom(&format!("p{}_{}", i, j))) 
-            .reduce(|acc, lit| or(acc, lit)) 
+            .map(|j| atom(&format!("p{}_{}", i, j)))
+            .reduce(|acc, lit| or(acc, lit))
             .unwrap();
         gamma = and(gamma, clause);
     }
@@ -18,7 +18,7 @@ fn create_php_formula(n: usize) -> Formula {
                     not(atom(&format!("p{}_{}", i, j))),
                     not(atom(&format!("p{}_{}", k, j))),
                 );
-                delta = and(delta, clause); 
+                delta = and(delta, clause);
             }
         }
     }
@@ -27,7 +27,7 @@ fn create_php_formula(n: usize) -> Formula {
 }
 
 fn main() {
-    let n = 4; 
+    let n = 4;
     let formula = create_php_formula(n);
     let f_sat = formula.sat_dpll();
     println!("A fórmula é satisfatível? {}", f_sat);

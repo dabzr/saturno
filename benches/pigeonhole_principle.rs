@@ -1,10 +1,10 @@
+use criterion::{criterion_group, criterion_main, Criterion};
 use saturno::types::Formula;
 use saturno::types::*;
-use criterion::{criterion_group, criterion_main, Criterion};
 
 fn create_php_formula(n: usize) -> Formula {
-    let mut gamma = atom("neutral1"); 
-    let mut delta = atom("neutral2"); 
+    let mut gamma = atom("neutral1");
+    let mut delta = atom("neutral2");
     for i in 1..=n + 1 {
         let clause = (1..=n)
             .map(|j| atom(&format!("p{}_{}", i, j)))
@@ -25,7 +25,6 @@ fn create_php_formula(n: usize) -> Formula {
     }
     implies(gamma, delta)
 }
-
 
 fn bench_dpll(c: &mut Criterion) {
     let formula = create_php_formula(3);
