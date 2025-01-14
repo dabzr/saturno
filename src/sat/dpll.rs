@@ -9,9 +9,17 @@ use Formula::*;
 type Clauses = Vec<HashSet<Rc<Formula>>>;
 
 impl Formula {
-    pub fn sat_dpll(&self) -> bool {
+    pub fn sat_dpll_naive(&self) -> bool {
         let lst = match self.cnf_to_list() {
             Err(()) => self.to_cnf_naive().cnf_to_list().unwrap(),
+            Ok(v) => v,
+        };
+        lst.dpll()
+    }
+
+    pub fn sat_dpll_tseitin(&self) -> bool {
+        let lst = match self.cnf_to_list() {
+            Err(()) => self.to_cnf_tseitin().cnf_to_list().unwrap(),
             Ok(v) => v,
         };
         lst.dpll()
